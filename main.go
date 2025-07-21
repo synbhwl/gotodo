@@ -9,15 +9,11 @@ import (
 	"time"
 )
 
-type reqbody struct{
-	Title string `json:"task"`
-}
-
-type Task struct{
-	id string
-	title string
-	completed bool
-	timestamp string
+type Task struct { // making a type Task that'll hold all those fields
+	Title string `json:"title"`
+	Id string `json:"id"`
+	Completed bool `json:"completed"`
+	Timestamp string `json:"timestamp"`
 }
 
 func hello(w http.ResponseWriter, r *http.Request){
@@ -38,26 +34,14 @@ func addTodo(w http.ResponseWriter, r *http.Request){
 		return
 	}
 
-	type Data struct { //making a struct that'll hold the title from req body
-		Title string `json:"title"` //check title
-	}
-
-	type Task struct { // making a type Task that'll hold all those fields
-		Title string
-		Id string
-		Completed bool
-		Timestamp string
-	}
-
-	var newData Data //new object of type Data
-	err := json.NewDecoder(r.Body).Decode(&newData) //feeding it into new data so that it takes the title
+	var newtask Task //new task with type Task
+	err := json.NewDecoder(r.Body).Decode(&newtask) //itll parse the json title into the title field of newtask
 	if err != nil{
 		http.Error(w, "invalid JSON", http.StatusBadRequest)
 		return 
 	}
 
-	newtask := Task{ //making a new task of type Task that holds all those fields
-		Title : newData.Title,
+	newtask = Task{ //making a new task of type Task that holds all those fields
 		Id : fmt.Sprintf("%d", time.Now().UnixNano()),
 		Completed : false,
 		Timestamp: time.Now().Format(time.RFC3339),
