@@ -1,0 +1,5 @@
+// to say hello 
+curl -X GET http://localhost:3000/hello -H "Content-Type: application/json"
+
+// adding a task
+curl -X POST http://localhost:3000/tasks/new -H "Content-Type: application/json" -d '{"title": "make this bloody thing work"}'
