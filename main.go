@@ -43,10 +43,10 @@ func addTodo(w http.ResponseWriter, r *http.Request){
 	}
 
 	type Task struct { // making a type Task that'll hold all those fields
-		title string
-		id string
-		completed bool
-		timestamp string
+		Title string
+		Id string
+		Completed bool
+		Timestamp string
 	}
 
 	var newData Data //new object of type Data
@@ -57,10 +57,10 @@ func addTodo(w http.ResponseWriter, r *http.Request){
 	}
 
 	newtask := Task{ //making a new task of type Task that holds all those fields
-		title : newData.Title,
-		id : fmt.Sprintf("%d", time.Now().UnixNano()),
-		completed : false,
-		timestamp: time.Now().Format(time.RFC3339),
+		Title : newData.Title,
+		Id : fmt.Sprintf("%d", time.Now().UnixNano()),
+		Completed : false,
+		Timestamp: time.Now().Format(time.RFC3339),
 	}
 
 
