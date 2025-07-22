@@ -17,6 +17,7 @@ type Task struct { // making a type Task that'll hold all those fields
 	Timestamp string `json:"timestamp"`
 }
 
+// hello handler
 func hello(w http.ResponseWriter, r *http.Request){
 	if r.Method != http.MethodGet{
 		http.Error(w, "method not allowed", http.StatusBadRequest)
@@ -29,6 +30,7 @@ func hello(w http.ResponseWriter, r *http.Request){
 	json.NewEncoder(w).Encode(msg)
 }
 
+// adding to do handler 
 func addTodo(w http.ResponseWriter, r *http.Request){
 	if r.Method != http.MethodPost{ //checking method
 		http.Error(w, "method not allowed", http.StatusBadRequest)
@@ -88,6 +90,7 @@ func addTodo(w http.ResponseWriter, r *http.Request){
 
 }
 
+// seeing all tasks handler 
 func seeTasks(w http.ResponseWriter, r *http.Request){
 	if r.Method != http.MethodGet{ 
 		http.Error(w, "method not allowed", http.StatusBadRequest)
@@ -112,6 +115,7 @@ func seeTasks(w http.ResponseWriter, r *http.Request){
 
 }
 
+// seeing one task handler 
 func searchTask(w http.ResponseWriter, r *http.Request){
 	if r.Method != http.MethodGet{ 
 		http.Error(w, "method not allowed", http.StatusBadRequest)
@@ -157,10 +161,68 @@ func searchTask(w http.ResponseWriter, r *http.Request){
 	w.Write(matchedbyte)
 }
 
+// delete a task 
+func DeleteTask(w http.ResponseWriter, r *http.Request){
+	if r.Method != http.MethodDelete{ 
+		http.Error(w, "method not allowed", http.StatusBadRequest)
+		return
+	}
+
+	title := r.URL.Query().Get("title")
+
+
+	file, ferr := os.OpenFile("tasks.json", os.O_RDWR, 0644)
+	if ferr != nil{
+		http.Error(w, "couldnt read file", http.StatusInternalServerError)
+		return
+	}
+
+	filebytes, rerr := io.ReadAll(file)
+	if rerr != nil{
+		http.Error(w, "couldnt read file bytes", http.StatusInternalServerError)
+	}
+
+	var tasks []Task
+	jumerr := json.Unmarshal(filebytes, &tasks)
+	if jumerr != nil{
+		http.Error(w, "couldnt unmarshall", http.StatusInternalServerError)
+		return
+	}
+
+	var matched []Task
+	for _, task := range tasks{
+		if strings.ToLower(task.Title) != strings.ToLower(title){
+			matched = append(matched, task)
+		}
+	}
+
+	matchedbytes, jmerr := json.MarshalIndent(matched, "", " ")
+	if jmerr != nil{
+		http.Error(w, "couldnt unmarshall", http.StatusInternalServerError)
+		return
+	}
+
+	werr := os.WriteFile("tasks.json", matchedbytes, 0644)
+	if werr != nil{
+		http.Error(w, "couldnt update file", http.StatusInternalServerError)
+		return
+	}
+
+	msg := map[string]string{"message":"task deleted successfully"}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(msg)
+}
+
+
+// change title 
+// change status
 func main(){
 	http.HandleFunc("/hello", hello)
 	http.HandleFunc("/tasks/new", addTodo)
 	http.HandleFunc("/tasks/all", seeTasks)
 	http.HandleFunc("/tasks/search", searchTask)
+	http.HandleFunc("/tasks/delete", DeleteTask)
 	http.ListenAndServe(":3000", nil)
 }

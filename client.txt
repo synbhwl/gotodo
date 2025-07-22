@@ -9,3 +9,6 @@ curl -X GET "http://localhost:3000/tasks/all" -H "Content-Type: application/json
 
 // searching a specific task
 curl -X GET "http://localhost:3000/tasks/search?title=make%20this%20bloody%20thing%20work" -H "Content-Type: application/json"
+
+// deleting a task 
+curl -X DELETE "http://localhost:3000/tasks/delete?title=make%20this%20bloody%20thing%20work" -H "Content-Type: application/json"
