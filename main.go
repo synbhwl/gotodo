@@ -215,14 +215,79 @@ func DeleteTask(w http.ResponseWriter, r *http.Request){
 	json.NewEncoder(w).Encode(msg)
 }
 
+func EditTask(w http.ResponseWriter, r *http.Request){
+	if r.Method != http.MethodPatch{ 
+		http.Error(w, "method not allowed", http.StatusBadRequest)
+		return
+	}
 
-// change title 
-// change status
+	oldtitle := r.URL.Query().Get("old_title")
+	newtitle := r.URL.Query().Get("new_title")
+	completed := r.URL.Query().Get("completed")
+
+	if oldtitle == ""{
+		http.Error(w, "empty title param", http.StatusBadRequest)
+		return
+	}
+
+	file, ferr := os.OpenFile("tasks.json", os.O_RDWR, 0644)
+	if ferr != nil{
+		http.Error(w, "couldnt open file", http.StatusInternalServerError)
+		return
+	}
+
+	
+	filebytes, rerr := io.ReadAll(file)
+	if rerr != nil{
+		http.Error(w, "couldnt read file", http.StatusInternalServerError)
+		return
+	}
+
+	var tasks []*Task
+	jumerr := json.Unmarshal(filebytes, &tasks)
+	if jumerr != nil{
+		http.Error(w, "couldnt unmarshal bytes", http.StatusInternalServerError)
+		return
+	}
+
+
+	for _, task := range tasks{
+		if strings.ToLower(oldtitle) == strings.ToLower(task.Title){
+			if newtitle != ""{
+				task.Title = newtitle
+			}
+			if completed != ""{
+				status := completed == "true"
+				task.Completed = status
+			}
+		} 
+	}
+
+	updated, jmerr := json.MarshalIndent(tasks, "", " ")
+	if jmerr != nil{
+		http.Error(w, "couldnt marshal into json bytes", http.StatusInternalServerError)
+		return
+	}
+
+	werr := os.WriteFile("tasks.json", updated, 0644)
+	if werr != nil{
+		http.Error(w, "couldnt write file", http.StatusInternalServerError)
+		return
+	}
+
+	msg := map[string]string{"message":"task updated successfully"}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(msg)
+}
+
+// edit task 
 func main(){
 	http.HandleFunc("/hello", hello)
 	http.HandleFunc("/tasks/new", addTodo)
 	http.HandleFunc("/tasks/all", seeTasks)
 	http.HandleFunc("/tasks/search", searchTask)
 	http.HandleFunc("/tasks/delete", DeleteTask)
+	http.HandleFunc("/tasks/edit", EditTask)
 	http.ListenAndServe(":3000", nil)
 }
