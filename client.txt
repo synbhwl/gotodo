@@ -2,7 +2,7 @@
 curl -X GET "http://localhost:3000/hello" -H "Content-Type: application/json"
 
 // adding a task
-curl -X POST http://localhost:3000/tasks/new -H "Content-Type: application/json" -d '{"title": "refactor this monolith"}'
+curl -X POST http://localhost:3000/tasks/new -H "Content-Type: application/json" -d '{"title": "made to be deleted"}'
 
 // seeing all tasks
 curl -X GET "http://localhost:3000/tasks/all" -H "Content-Type: application/json"
@@ -11,10 +11,10 @@ curl -X GET "http://localhost:3000/tasks/all" -H "Content-Type: application/json
 curl -X GET "http://localhost:3000/tasks/search?title=learn%20Go%20fast" -H "Content-Type: application/json"
 
 // deleting a task 
-curl -X DELETE "http://localhost:3000/tasks/delete?title=make%20this%20bloody%20thing%20work" -H "Content-Type: application/json"
+curl -X DELETE "http://localhost:3000/tasks/delete?title=made%20to%20be%20deleted" -H "Content-Type: application/json"
 
 // editing a task
-curl -X PATCH "http://localhost:3000/tasks/edit?old_title=learn%20Go%20fast&new_title=learn%20Go%20fast&completed=false" -H "Content-Type: application/json"
+curl -X PATCH "http://localhost:3000/tasks/edit?old_title=learn%20Go%20fast&new_title=learn%20Go%20fast&completed=true" -H "Content-Type: application/json"
 
 // filtering by completed 
 curl -X GET "http://localhost:3000/tasks/filter?completed=true" -H "Content-Type: application/json"
