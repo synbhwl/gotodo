@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"gotodo/helpers"
+	"log"
 	"net/http"
 	"strings"
 	"time"
@@ -21,6 +22,8 @@ func Hello(w http.ResponseWriter, r *http.Request){
 		http.Error(w, "method not allowed", http.StatusBadRequest)
 		return
 	}
+
+	log.Println("hello was sent")
 
 	msg := map[string]string{"message":"the server says hello"}
 	w.Header().Set("Content-Type", "application/json")
@@ -55,6 +58,7 @@ func AddTodo(w http.ResponseWriter, r *http.Request){
 		return
 	}
 
+	log.Println("new todo was added to the list")
 	msg := map[string]string{"message":"task added successfully"}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
@@ -76,15 +80,19 @@ func SeeTasks(w http.ResponseWriter, r *http.Request){
 		return
 	}
 
+	log.Println("list of all tasks sent")
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(updated)
-
 }
 
 // seeing one task handler 
 func SearchTask(w http.ResponseWriter, r *http.Request){
 	title := r.URL.Query().Get("title")
+	if title == ""{
+		http.Error(w, "title query param missing", http.StatusBadRequest)
+		return
+	}
 
 	tasks, errFile := helpers.ReadTasks("tasks.json")
 	if errFile != nil{
@@ -106,6 +114,7 @@ func SearchTask(w http.ResponseWriter, r *http.Request){
 		return 
 	}
 
+	log.Println("specific task was sent to user")
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(matchedbyte)
@@ -114,6 +123,10 @@ func SearchTask(w http.ResponseWriter, r *http.Request){
 // delete a task 
 func DeleteTask(w http.ResponseWriter, r *http.Request){
 	title := r.URL.Query().Get("title")
+	if title == ""{
+		http.Error(w, "title query param missing", http.StatusBadRequest)
+		return
+	}
 
 	tasks, errFile := helpers.ReadTasks("tasks.json")
 	if errFile != nil{
@@ -135,6 +148,7 @@ func DeleteTask(w http.ResponseWriter, r *http.Request){
 		return
 	}
 
+	log.Println("specific task was deleted as per request")
 	msg := map[string]string{"message":"task deleted successfully"}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
@@ -181,6 +195,7 @@ func EditTask(w http.ResponseWriter, r *http.Request){
 		return
 	}
 
+	log.Println("specific task was edited as per request")
 	msg := map[string]string{"message":"task updated successfully"}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
@@ -215,6 +230,7 @@ func FilterByStatus(w http.ResponseWriter, r *http.Request){
 		return
 	}
 
+	log.Println("filtered list of tasks by status was sent to user")
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(matchedbytes)
