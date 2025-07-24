@@ -2,6 +2,7 @@ package main
 
 import (
 	"gotodo/routers"
+	"log"
 	"net/http"
 	"os"
 )
@@ -13,5 +14,5 @@ func main() {
 		port = "3000"
 	}
 	r := routers.InitRoutes()
-	http.ListenAndServe(":"+port, r) 
+	log.Fatal(http.ListenAndServe(":"+port, r)) 
 }
