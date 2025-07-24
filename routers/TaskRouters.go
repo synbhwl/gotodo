@@ -1,10 +1,12 @@
-package routers 
+package routers
 
 import (
 	"gotodo/handlers"
+
 	"github.com/gorilla/mux"
 )
 
+// InitRoutes returns the multiplexer that handles all the routes
 func InitRoutes() *mux.Router {
 	r := mux.NewRouter()
 	r.HandleFunc("/hello", handlers.Hello).Methods("GET")

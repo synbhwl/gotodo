@@ -1,26 +1,26 @@
 [
- {
-  "title": "learn Go fast",
-  "id": "1753103647491006600",
-  "completed": true,
-  "timestamp": "2025-07-21T06:14:07-07:00"
- },
- {
-  "title": "become a backend engineer",
-  "id": "1753103682450006100",
-  "completed": false,
-  "timestamp": "2025-07-21T06:14:42-07:00"
- },
- {
-  "title": "refactor this monolith",
-  "id": "1753257013132802500",
-  "completed": false,
-  "timestamp": "2025-07-23T00:50:13-07:00"
- },
- {
-  "title": "pick up groceries",
-  "id": "1753260438331712700",
-  "completed": false,
-  "timestamp": "2025-07-23T01:47:18-07:00"
- }
+    {
+        "title": "learn Go fast",
+        "id": "1753103647491006600",
+        "completed": true,
+        "timestamp": "2025-07-21T06:14:07-07:00"
+    },
+    {
+        "title": "become a backend engineer",
+        "id": "1753103682450006100",
+        "completed": false,
+        "timestamp": "2025-07-21T06:14:42-07:00"
+    },
+    {
+        "title": "refactor this monolith",
+        "id": "1753257013132802500",
+        "completed": false,
+        "timestamp": "2025-07-23T00:50:13-07:00"
+    },
+    {
+        "title": "pick up groceries",
+        "id": "1753260438331712700",
+        "completed": false,
+        "timestamp": "2025-07-23T01:47:18-07:00"
+    }
 ]
